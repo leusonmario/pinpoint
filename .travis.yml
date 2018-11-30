@@ -1,9 +1,7 @@
 language: java
 
 jdk:
-  - oraclejdk7
-  - openjdk6
+  - oraclejdk8
 
-env: JAVA_6_HOME=/usr/lib/jvm/java-6-openjdk-amd64 JAVA_7_HOME=/usr/lib/jvm/java-7-oracle
-
-script: mvn test -Ptest
+script:
+  -  mvn clean cobertura:cobertura -Dtest=DefaultServerMetaDataHolderTest#testRaceConditionWhenAddingServiceInfo  -DfailIfNoTests=false
