@@ -1,9 +1,28 @@
+
+sudo: required
 language: java
 
 jdk:
   - oraclejdk7
   - openjdk6
 
-env: JAVA_6_HOME=/usr/lib/jvm/java-6-openjdk-amd64 JAVA_7_HOME=/usr/lib/jvm/java-7-oracle
 
-script: mvn test -Ptest
+
+script:
+  - mvn clean cobertura:cobertura -Dtest=DefaultServerMetaDataHolderTest#testRaceConditionWhenAddingServiceInfo -DfailIfNoTests=false
+
+before_deploy:
+- tar -zcvf coverage-result.tar.gz /home/travis/build/leusonmario/pinpoint/target/site/cobertura
+
+deploy:
+  provider: releases
+  api_key:
+    secure: "bwB6XdQe9OgBqUU/1CBuQxqOBWNCvL2pV+KMgUVkAaMsGH1V5hWg74EAZnFiFNKxN6mz0Gtfaiabs/yrLatxcmfmQ3/8E5b/3mY+R4t+ujbdU/SGPW6JvhxLPsmo+pEQBYSHMFhWaDLDWltkPP78o1jzqiUKwcKdueoLsuYfLRdvIdEKcu2sUNSQPpJAtdL3/Jlih3TkPDwGfJ16q9wPyiHRrqc2rROmnlFbtYKK8t+8Z2qHFyC27TuGQflwaJvD1+TP8sTTytrnsjr6clRwPm0N/oEJZSbzpnu2xrOkoabbPfu5MeaYN3q5wJNGY5pNJdObYzY3xo7FvPZ+bJRD7tPD19FguC9JMjfvhjBUCCbHcZFDDUit/vdQN8zPdzcCggk5Ne3qKyRIdmSrBcD7O0vd0WnqgHI0TO21pg0ACf2vi3Y1Js0POJ9J6b5tjBuXlIg/+uMKDPGQyVJeED10io9M1nMEoZaeP3aKeC0WTQ7zkNBvN1ww4wi1WVwcTvVL9/xVxwBrZNw0glV9v4LuuZYU7uIUACpEW/NvrosRjzARiM8xa/oc+IY1e15XS+kjkdb/qDoulWcV2nsgYX5m+wMWOXL5NhnurDcdpT/pdF8XEnkVd1twBgx1Q27UIzi9SILSdI6URh+mg5PiOTi1yupbrumPOM4KpCdEBnxgMD4="
+
+
+  file: coverage-result.tar.gz
+  file_glob: true
+  overwrite: true
+  skip_cleanup: true
+  on:
+    tags: true
